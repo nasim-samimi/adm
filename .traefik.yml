@@ -1,0 +1,9 @@
+displayName: "Admission test"
+type: middleware
+
+import: github.com/nasim-samimi/adm
+
+summary: "Admission test"
+
+testData:
+  Foo: Bar
