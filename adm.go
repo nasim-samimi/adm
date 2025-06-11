@@ -60,9 +60,6 @@ func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// m.sequence, decision = rotateSequence(m.sequence)
 
 	//header injection to the backend service
-	w.Header().Set("X-Plugin-Test", "intercepted")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Plugin intercepted request\n"))
 
 	//header injection to the client response
 	// w.Header().Add("Sequence", decision)
