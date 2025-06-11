@@ -44,38 +44,43 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 
 }
 
+// func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+// 	if r.URL.Path == m.updatePrefix+"/admission-update" {
+// 		// You can rotate, reset, or log here
+// 		m.sequence, _ = rotateSequence(m.sequence)
+
+// 		w.WriteHeader(http.StatusOK)
+// 		w.Write([]byte("Admission sequence updated\n"))
+// 		return
+// 	}
+
+// 	log.Println("Plugin hit! Path:", r.URL.Path)
+
+// 	decision := "0"
+// 	m.sequence, decision = rotateSequence(m.sequence)
+// 	//header injection to the backend service
+// 	// r.Header.Set("X-Request-ID", uid)
+
+// 	//header injection to the client response
+// 	w.Header().Add("Sequence", decision)
+// 	if decision == "0" {
+// 		w.WriteHeader(http.StatusForbidden)
+// 		return
+// 	}
+
+// 	// w.Write([]byte("Hello, World!"))
+// 	log.Println("Request allowed, forwarding to next handler.")
+// 	m.next.ServeHTTP(w, r)
+// }
+
 func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	if r.URL.Path == m.updatePrefix+"/admission-update" {
-		// You can rotate, reset, or log here
-		m.sequence, _ = rotateSequence(m.sequence)
-
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Admission sequence updated\n"))
-		return
-	}
-
-	log.Println("Plugin hit! Path:", r.URL.Path)
-
-	decision := "0"
-	m.sequence, decision = rotateSequence(m.sequence)
-	//header injection to the backend service
-	// r.Header.Set("X-Request-ID", uid)
-
-	//header injection to the client response
-	w.Header().Add("Sequence", decision)
-	if decision == "0" {
-		w.WriteHeader(http.StatusForbidden)
-		return
-	}
-
-	// w.Write([]byte("Hello, World!"))
-	log.Println("Request allowed, forwarding to next handler.")
+	log.Printf("[adm-plugin] Received request: %s", r.URL.Path)
 	m.next.ServeHTTP(w, r)
 }
 
-func rotateSequence(s string) (string, string) {
-	runes := []rune(s)
-	rotated := append(runes[1:], runes[0])
-	return string(rotated), string(runes[0])
-}
+// func rotateSequence(s string) (string, string) {
+// 	runes := []rune(s)
+// 	rotated := append(runes[1:], runes[0])
+// 	return string(rotated), string(runes[0])
+// }
