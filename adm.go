@@ -2,6 +2,7 @@ package adm
 
 import (
 	"context"
+	"log"
 	"net/http"
 	// "gitlab.com/rwxrob/uniq"
 )
@@ -54,6 +55,8 @@ func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println("Plugin hit! Path:", r.URL.Path)
+
 	decision := "0"
 	m.sequence, decision = rotateSequence(m.sequence)
 	//header injection to the backend service
@@ -67,6 +70,7 @@ func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// w.Write([]byte("Hello, World!"))
+	log.Println("Request allowed, forwarding to next handler.")
 	m.next.ServeHTTP(w, r)
 }
 
