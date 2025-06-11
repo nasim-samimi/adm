@@ -76,7 +76,8 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 
 func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("[adm-plugin] Received request: %s", r.URL.Path)
-	m.next.ServeHTTP(w, r)
+	// m.next.ServeHTTP(w, r)
+	panic("Testing plugin invocation")
 }
 
 // func rotateSequence(s string) (string, string) {
