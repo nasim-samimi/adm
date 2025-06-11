@@ -2,7 +2,6 @@ package adm
 
 import (
 	"context"
-	"log"
 	"net/http"
 	// "gitlab.com/rwxrob/uniq"
 )
@@ -61,7 +60,9 @@ func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// m.sequence, decision = rotateSequence(m.sequence)
 
 	//header injection to the backend service
-	r.Header.Set("X-Request-ID", "10101010")
+	w.Header().Set("X-Plugin-Test", "intercepted")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Plugin intercepted request\n"))
 
 	//header injection to the client response
 	// w.Header().Add("Sequence", decision)
@@ -70,8 +71,6 @@ func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// 	return
 	// }
 
-	w.Write([]byte("Hello, World!"))
-	log.Println("Request allowed, forwarding to next handler.")
 	m.next.ServeHTTP(w, r)
 }
 
