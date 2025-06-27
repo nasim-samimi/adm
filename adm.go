@@ -2,6 +2,7 @@ package adm
 
 import (
 	"context"
+	"log"
 	"net/http"
 	// "gitlab.com/rwxrob/uniq"
 )
@@ -45,28 +46,28 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 
 func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	// if r.URL.Path == m.updatePrefix+"/admission-update" {
-	// 	// You can rotate, reset, or log here
-	// 	m.sequence, _ = rotateSequence(m.sequence)
+	if r.URL.Path == m.updatePrefix+"/admission-update" {
+		// You can rotate, reset, or log here
+		m.sequence, _ = rotateSequence(m.sequence)
 
-	// 	w.WriteHeader(http.StatusOK)
-	// 	w.Write([]byte("Admission sequence updated\n"))
-	// 	return
-	// }
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Admission sequence updated\n"))
+		return
+	}
 
-	// log.Println("Plugin hit! Path:", r.URL.Path)
+	log.Println("Plugin hit! Path:", r.URL.Path)
 
-	// decision := "0"
-	// m.sequence, decision = rotateSequence(m.sequence)
+	decision := "0"
+	m.sequence, decision = rotateSequence(m.sequence)
 
-	//header injection to the backend service
+	// header injection to the backend service
 
-	//header injection to the client response
-	// w.Header().Add("Sequence", decision)
-	// if decision == "0" {
-	// 	w.WriteHeader(http.StatusForbidden)
-	// 	return
-	// }
+	// header injection to the client response
+	w.Header().Add("Sequence", decision)
+	if decision == "0" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
 
 	m.next.ServeHTTP(w, r)
 }
@@ -76,3 +77,9 @@ func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // 	rotated := append(runes[1:], runes[0])
 // 	return string(rotated), string(runes[0])
 // }
+
+func rotateSequence(s string) (string, string) {
+	runes := []rune(s)
+	rotated := append(runes[1:], runes[0])
+	return string(rotated), string(rotated[0]) // <-- FIXED
+}
