@@ -72,14 +72,14 @@ func (m *MKAdm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	m.next.ServeHTTP(w, r)
 }
 
-// func rotateSequence(s string) (string, string) {
-// 	runes := []rune(s)
-// 	rotated := append(runes[1:], runes[0])
-// 	return string(rotated), string(runes[0])
-// }
-
 func rotateSequence(s string) (string, string) {
 	runes := []rune(s)
 	rotated := append(runes[1:], runes[0])
-	return string(rotated), string(rotated[0]) // <-- FIXED
+	return string(rotated), string(runes[0])
 }
+
+// func rotateSequence(s string) (string, string) {
+// 	runes := []rune(s)
+// 	rotated := append(runes[1:], runes[0])
+// 	return string(rotated), string(rotated[0]) // <-- FIXED
+// }
